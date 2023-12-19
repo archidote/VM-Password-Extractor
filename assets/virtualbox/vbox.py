@@ -75,7 +75,7 @@ def vbox_to_hashcat(keystore, output, verbose):
         keystore = parse_keystore(keystore, verbose)
         formatted_hash =  ("$vbox$0$"+str(keystore['Iteration1_PBKDF2'])+
                            "$"+hexlify(keystore['Salt1_PBKDF2']).decode()+
-                           "$"+str(int(keystore['Key_Length'] / 4))+
+                           "$"+str(int(keystore['Key_Length'] / 4))+ # Key_Lenght need to be divide by 4 to match hashcat format requirements
                            "$"+hexlify(keystore['Enc_Password'][0:keystore['Key_Length']]).decode()+
                            "$"+str(keystore['Iteration2_PBKDF2'])+
                            "$"+hexlify(keystore['Salt2_PBKDF2']).decode()+
@@ -98,7 +98,7 @@ def vbox_to_john(keystore, output, verbose):
         pre_formatted_hash = (str(keystore['Iteration1_PBKDF2'])+
                               "$"+str(keystore['Iteration2_PBKDF2'])+
                               "$"+str(keystore['EVP_Length'])+
-                              "$"+str(int(keystore['Key_Length'] / 2))+
+                              "$"+str(int(keystore['Key_Length']))+
                               "$"+hexlify(keystore['Salt1_PBKDF2']).decode()+
                               "$"+hexlify(keystore['Salt2_PBKDF2']).decode()+
                               "$"+hexlify(keystore['Enc_Password'][0:keystore['Key_Length']]).decode()+
@@ -110,7 +110,7 @@ def vbox_to_john(keystore, output, verbose):
             formatted_hash = ("$vdi$aes-xts256$sha256$"+str(keystore['Iteration1_PBKDF2'])+
                               "$"+str(keystore['Iteration2_PBKDF2'])+
                               "$"+str(keystore['EVP_Length'])+
-                              "$"+str(int(keystore['Key_Length'] / 2))+
+                              "$"+str(int(keystore['Key_Length'] / 2))+  # Key_Lenght need to be divide by 2 to match john format requirements
                               "$"+hexlify(keystore['Salt1_PBKDF2']).decode()+
                               "$"+hexlify(keystore['Salt2_PBKDF2']).decode()+
                               "$"+hexlify(keystore['Enc_Password'][0:keystore['Key_Length']]).decode()+

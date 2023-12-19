@@ -71,9 +71,9 @@ def vmx_to_john(vmx_file, output, verbose):
     try:
         vmx_ks = parse_vmx_keysafe(vmx_file, verbose)
         salt = hexlify(vmx_ks['salt']).decode()
-        cipherdata = hexlify(vmx_ks['dict']).decode()
+        final_hash = hexlify(vmx_ks['dict']).decode()
 
-        formatted_hash = ""+os.path.basename(vmx_file)+"-"+vmx_ks['name']+":$vmx$1$0$0$"+str(vmx_ks['hash_round'])+"$"+salt+"$"+cipherdata
+        formatted_hash = ""+os.path.basename(vmx_file)+"-"+vmx_ks['name']+":$vmx$1$0$0$"+str(vmx_ks['hash_round'])+"$"+salt+"$"+final_hash
         
         file_name = save_formatted_hash_to_file(formatted_hash, output)
         print("[*] Try to break it with the following command: john --format=vmx --wordlist=/usr/share/wordlists/rockyou.txt " + file_name)
@@ -88,9 +88,9 @@ def vmx_to_hashcat(vmx_file, output, verbose):
     try:
         vmx_ks = parse_vmx_keysafe(vmx_file, verbose)
         salt = hexlify(vmx_ks['salt']).decode()
-        final_salted_hash = hexlify(vmx_ks['dict']).decode()[:64]
+        final_hash = hexlify(vmx_ks['dict']).decode()[:64] # Hashcat only require the first 64 chars for VMware VM's final hash
         
-        formatted_hash = f"$vmx$0${vmx_ks['hash_round']}${salt}${final_salted_hash}"
+        formatted_hash = f"$vmx$0${vmx_ks['hash_round']}${salt}${final_hash}"
         
         file_name = save_formatted_hash_to_file(formatted_hash,output)
         print("[*] Try to break it with the following command: hashcat -m 27400 -a 0 "+file_name+" /usr/share/wordlists/rockyou.txt")
